@@ -1,6 +1,6 @@
-const { join } = require("path");
 const fs = require("fs/promises");
 const { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder, Colors } = require("discord.js");
+const { getMetrics } = require("./metrics");
 
 
 module.exports = {
@@ -27,9 +27,7 @@ module.exports = {
 
             const subcommand = interaction.options.getSubcommand(true);
 
-            // "require" caches modules, so I'm like, 90% sure we'd be served old metrics after the first time
-            // if we just "require"'d here.
-            const metrics = await fs.readFile(join(__dirname, "..", "metrics.json")).then(JSON.parse);
+            const metrics = getMetrics();
 
             if (subcommand == "user") {
                 const user = interaction.options.getUser("user", false) ?? interaction.user;
