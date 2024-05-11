@@ -1,21 +1,15 @@
 require('dotenv').config();
 const fs = require('fs');
 const metrics = require('../metrics.json');
-
-// Import the required classes and methods from the discord.js module
 const {
-    Client,
-    IntentsBitField: { Flags: IntentsFlags },
+    EmbedBuilder,
+    Colors,
 } = require('discord.js');
 
+const { SUGOIS_COMMAND } = require("./sugoi");
+
 // Create a new client instance
-const client = new Client({
-    intents: [
-        IntentsFlags.Guilds,
-        IntentsFlags.GuildMessages,
-        IntentsFlags.MessageContent,
-    ],
-});
+const client = require("./client").getClient();
 
 // Regular expression to match the target words
 const SUGOI_REGEX = /sugoi|すごい|unbelievable|🦜|amazing|relink|granblue+/g;
@@ -102,6 +96,28 @@ async function main() {
                 .then(() => {
                     recordMetrics(message);
                 });
+        });
+
+        client.on("interactionCreate", async (interaction) => {
+            try {
+                // for now, just hardcode commands. Probably good enough.
+                if (interaction.commandName == "sugois") {
+                    SUGOIS_COMMAND.handler(interaction);
+                }
+            } catch (error) {
+                console.error(error);
+
+                if (interaction.isRepliable() && !interaction.replied) {
+                    await interaction.reply({
+                        ephemeral: true,
+                        embeds: [
+                            new EmbedBuilder()
+                                .setColor(Colors.Red)
+                                .setDescription("Something went wrong!"),
+                        ],
+                    })
+                }
+            }
         });
     } catch (error) {
         console.error(error);
