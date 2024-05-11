@@ -24,22 +24,23 @@ async function recordMetrics(message) {
         if (!metrics['times sugoied']) metrics['times sugoied'] = 1;
         else metrics['times sugoied']++;
         if (!metrics['users']) metrics['users'] = [];
+
+        // Check if the user is in the list of users who have been sugoied
+        const user = metrics['users'].find(
+            (user) => user.id === message.author.id
+        );
+        // If the user is not in the list of users who have been sugoied
         // Add the user to the list of users who have been sugoied
-        if (!metrics['users'].find((user) => user.id === message.author.id))
-            // If the user is not in the list of users who have been sugoied
-            // Add the user to the list of users who have been sugoied
-            // and set the number of times they have been sugoied to 1
+        // and set the number of times they have been sugoied to 1
+        if (!user) {
             metrics['users'].push({
                 id: message.author.id,
                 name: message.author.username,
                 sugois: 1,
             });
-        else {
-            // If the user is in the list of users who have been sugoied
+        } else {
+            // If the user was already in the list of users who have been sugoied
             // Increment the number of times they have been sugoied
-            const user = metrics['users'].find(
-                (user) => user.id === message.author.id
-            );
             user.sugois++;
         }
         // Write the metrics object to the metrics.json file
@@ -55,4 +56,4 @@ async function recordMetrics(message) {
     }
 }
 
-module.exports = { getMetrics, recordMetrics }
+module.exports = { getMetrics, recordMetrics };
