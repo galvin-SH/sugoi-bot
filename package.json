@@ -1,0 +1,15 @@
+{
+    "name": "sugoi-bot",
+    "version": "1.0.0",
+    "description": "Silly discord bot that reacts to messages with sugoi among other things",
+    "main": "index.js",
+    "scripts": {
+        "start": "node src/index.js"
+    },
+    "author": "Matthew Galvin",
+    "license": "MIT",
+    "dependencies": {
+        "discord.js": "^14.14.1",
+        "dotenv": "^16.4.5"
+    }
+}
