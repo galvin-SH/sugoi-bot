@@ -1,7 +1,5 @@
-const fs = require("fs/promises");
 const { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder, Colors } = require("discord.js");
 const { getMetrics } = require("./metrics");
-
 
 module.exports = {
     SUGOIS_COMMAND: {
