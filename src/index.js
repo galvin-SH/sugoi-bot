@@ -2,10 +2,10 @@ require('dotenv').config();
 const {
     EmbedBuilder,
     Colors,
+    Events,
 } = require('discord.js');
 
-const { recordMetrics } = require("./metrics");
-
+const { recordMetrics, getMetrics } = require("./metrics");
 const { SUGOIS_COMMAND } = require("./sugoi");
 
 // Create a new client instance
@@ -14,80 +14,70 @@ const client = require("./client").getClient();
 // Regular expression to match the target words
 const SUGOI_REGEX = /sugoi|すごい|unbelievable|🦜|amazing|relink|granblue+/g;
 
-// Log in to Discord
-function botLogin() {
+
+client.on(Events.ClientReady, () => {
+    console.log(`Logged in as ${client.user.displayName}`);
+});
+
+// Listen for messages
+client.on(Events.MessageCreate, async (message) => {
+    // If the message is from a bot, ignore it
+    if (message.author.bot) return;
+
+    const matches = [
+        ...message.content.toLowerCase().matchAll(SUGOI_REGEX),
+    ];
+
+    // If the message does not contain the target words, ignore it
+    if (!matches || matches.length <= 0) return;
+
+    // Reply to the message with a message
+    await message
+        .reply({
+            content: '🦜すごい🦜すごい🦜アンビリーバボー🦜',
+            allowedMentions: {
+                parse: [],
+            },
+        }).catch(() => {});
+
+    await message.react('🦜').catch(() => {});
+    
+    await recordMetrics(message);
+});
+
+client.on(Events.InteractionCreate, async (interaction) => {
+    // if the interaction is not a slash command, ignore it
+    if (!interaction.isChatInputCommand()) return;
+
     try {
-        client.login(process.env.DISCORD_TOKEN);
-        client.on('ready', () => {
-            console.log(`Logged in as ${client.user.displayName}`);
-        });
+        // for now, just hardcode commands. Probably good enough.
+        if (interaction.commandName == "sugois") {
+            SUGOIS_COMMAND.handler(interaction);
+        }
     } catch (error) {
         console.error(error);
-    }
-}
 
-// Main function
+        if (interaction.isRepliable() && !interaction.replied) {
+            await interaction.reply({
+                ephemeral: true,
+                embeds: [
+                    new EmbedBuilder()
+                        .setColor(Colors.Red)
+                        .setDescription("Something went wrong!"),
+                ],
+            }).catch(console.error);
+        }
+    }
+});
+
+
 async function main() {
-    // Log in to Discord
-    await botLogin();
+    // ensure metrics.json exists before we login and receive events.
+    await getMetrics();
 
-    try {
-        // Listen for messages
-        client.on('messageCreate', async (message) => {
-            const matches = [
-                ...message.content.toLowerCase().matchAll(SUGOI_REGEX),
-            ];
-
-            // If the message does not contain the target words, ignore it
-            if (!matches || matches.length <= 0) return;
-
-            // If the message is from a bot, ignore it
-            if (message.author.bot) return;
-
-            // Reply to the message with a message
-            await message
-                .reply({
-                    content: '🦜すごい🦜すごい🦜アンビリーバボー🦜',
-                    allowedMentions: {
-                        parse: [],
-                    },
-                })
-                // React to the message with the 🦜 emoji
-                .then(() => message.react('🦜'))
-                // record user metrics in metrics.json
-                .then(() => {
-                    recordMetrics(message);
-                });
-        });
-
-        client.on("interactionCreate", async (interaction) => {
-            try {
-                // for now, just hardcode commands. Probably good enough.
-                if (interaction.commandName == "sugois") {
-                    SUGOIS_COMMAND.handler(interaction);
-                }
-            } catch (error) {
-                console.error(error);
-
-                if (interaction.isRepliable() && !interaction.replied) {
-                    await interaction.reply({
-                        ephemeral: true,
-                        embeds: [
-                            new EmbedBuilder()
-                                .setColor(Colors.Red)
-                                .setDescription("Something went wrong!"),
-                        ],
-                    })
-                }
-            }
-        });
-    } catch (error) {
-        console.error(error);
-    }
+    // login.
+    // this will throw an error if the token is invalid
+    await client.login(process.env.DISCORD_TOKEN);
 }
-// Call the main function
-try {
-    main();
-} catch (error) {
-    console.error(error);
-}
+
+main();
