@@ -3,8 +3,12 @@
     "version": "1.0.0",
     "description": "Silly discord bot that reacts to messages with sugoi among other things",
     "main": "index.js",
+    "engines": {
+        "node": ">=20.0.0"
+    },
     "scripts": {
-        "start": "node src/index.js"
+        "start": "node src/index.js",
+        "deploy-commands": "node src/deploy.js"
     },
     "author": "Matthew Galvin",
     "license": "MIT",
