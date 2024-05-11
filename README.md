@@ -46,6 +46,10 @@ This project is not currently seeking any collaborators
 
 This project does not currently implement any test functionality
 
+## Credits
+
+This project started as a joke spinning off of [my friend](https://github.com/Mampfinator)'s [project](https://github.com/Mampfinator/preview-bot)
+
 ## Questions
 
 If you have any questions or concerns regarding this project, my github profile can be located by using the following link
