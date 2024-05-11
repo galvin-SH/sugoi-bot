@@ -2,7 +2,7 @@
 require("dotenv").config();
 
 const commands = [
-    require("./sugoi").SUGOIS_COMMAND.builder
+    require("./sugois").SUGOIS_COMMAND.builder
 ];
 
 const client = require("./client").getClient();

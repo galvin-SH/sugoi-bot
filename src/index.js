@@ -6,7 +6,7 @@ const {
 } = require('discord.js');
 
 const { recordMetrics, getMetrics } = require("./metrics");
-const { SUGOIS_COMMAND } = require("./sugoi");
+const { SUGOIS_COMMAND } = require("./sugois");
 
 // Create a new client instance
 const client = require("./client").getClient();
