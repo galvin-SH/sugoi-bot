@@ -2,7 +2,7 @@
 require("dotenv").config();
 
 const commands = [
-    require("./sugoi").SUGOIS_COMMAND.builder
+    require("./sugois").SUGOIS_COMMAND.builder
 ];
 
 const client = require("./client").getClient();
@@ -29,7 +29,7 @@ async function main() {
 
     // if we're supposed to be deploying to a guild, we only clean up commands in that guild
     const oldCommands = guild ? await guild.commands.fetch() : await client.application.commands.fetch();
-    console.log(oldCommands.size > 0 ? `Cleaning up ${oldCommands.size} old commands` : "Not cleaning up old commands.");
+    console.log(oldCommands.size > 0 ? `Cleaning up ${oldCommands.size} old commands: [${[...oldCommands.values()].map((command) => command.name).join(", ")}]` : "No old commands to clean up.");
 
     // clean up old commands
     for (const command of oldCommands.values()) {
@@ -38,7 +38,7 @@ async function main() {
 
     // deploy new commands
     for (const command of commands) {
-        console.log(`Deploying ${command.name}.`);
+        console.log(`Deploying "/${command.name}".`);
         await client.application.commands.create(command, debugGuild);
     }
 }

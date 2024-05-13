@@ -48,7 +48,7 @@ This project does not currently implement any test functionality
 
 ## Credits
 
-This project started as a joke spinning off of [my friend](https://github.com/Mampfinator)'s [project](https://github.com/Mampfinator/preview-bot)
+This project started as a joke spinning off of [Mampfinator aka Sir Eatsalot](https://github.com/Mampfinator)'s [project](https://github.com/Mampfinator/preview-bot)
 
 ## Questions
 
