@@ -8,7 +8,8 @@
     },
     "scripts": {
         "start": "node src/index.js",
-        "deploy-commands": "node src/deploy.js"
+        "deploy-commands": "node src/deploy.js",
+        "update-json": "node src/update-json.js"
     },
     "author": "Matthew Galvin",
     "license": "MIT",
