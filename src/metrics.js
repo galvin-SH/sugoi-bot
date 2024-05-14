@@ -21,28 +21,31 @@ async function recordMetrics(message) {
     try {
         const metrics = await getMetrics();
         // Initialize the metrics object if it doesn't exist
-        if (!metrics['times sugoied']) metrics['times sugoied'] = 1;
-        else metrics['times sugoied']++;
-        if (!metrics['users']) metrics['users'] = [];
+        // The metrics object should have the keys 'total' and 'users'
+        // 'total' is the total number of times users have been sugoied
+        // 'users' is an object with user ids as keys
+        // and the number of times they have been sugoied as values
+        if (!metrics['total']) metrics['total'] = 1;
+        else metrics['total']++;
+        if (!metrics['users']) metrics['users'] = new Object();
+
+        const ids = Object.keys(metrics['users']);
+        const sugois = Object.values(metrics['users']);
 
         // Check if the user is in the list of users who have been sugoied
-        const user = metrics['users'].find(
-            (user) => user.id === message.author.id
-        );
-        // If the user is not in the list of users who have been sugoied
-        // Add the user to the list of users who have been sugoied
-        // and set the number of times they have been sugoied to 1
-        if (!user) {
-            metrics['users'].push({
-                id: message.author.id,
-                name: message.author.username,
-                sugois: 1,
-            });
+        if (ids.includes(message.author.id)) {
+            // Find the index of the user in the list of users who have been sugoied
+            const index = ids.indexOf(message.author.id);
+            // Increment the number of times the user has been sugoied
+            sugois[index]++;
+            // Update the user's sugois in the metrics object
+            metrics['users'][message.author.id] = sugois[index];
         } else {
-            // If the user was already in the list of users who have been sugoied
-            // Increment the number of times they have been sugoied
-            user.sugois++;
+            // Add the user to the list of users who have been sugoied
+            // and set the number of times they have been sugoied to 1
+            metrics['users'][message.author.id] = 1;
         }
+
         // Write the metrics object to the metrics.json file
         fs.writeFile(
             './metrics.json',
