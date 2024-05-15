@@ -90,7 +90,7 @@ module.exports = {
                         ],
                     });
                 }
-            } else if (subcommand == 'all') {
+            } else if (subcommand == 'global') {
                 // sorting can take some time, so we defer our reply
                 await interaction.deferReply();
 
@@ -98,7 +98,7 @@ module.exports = {
                 // this is pretty slow but probably fine for the scale we're working on.
                 const topUsers = Object.entries(metrics.users)
                     .sort((a, b) => b[1] - a[1])
-                    slice(0, 10)
+                    .slice(0, 10)
                     .map(([id, sugois]) => ({
                         id,
                         sugois,
@@ -109,7 +109,7 @@ module.exports = {
                     .setTitle('Sugois')
                     .setDescription(`Total: ${total}`)
 
-                if (users.length > 0) {
+                if (topUsers.length > 0) {
                     embed.addFields({
                         name: 'Leaderboard',
                         value: topUsers
