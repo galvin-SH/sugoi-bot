@@ -6,6 +6,8 @@ module.exports = {
             intents: [
                 IntentsFlags.Guilds,
                 IntentsFlags.GuildMessages,
+                // required basically only for `/sugois server`
+                IntentsFlags.GuildMembers,
                 IntentsFlags.MessageContent,
             ],
         });
