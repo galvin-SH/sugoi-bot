@@ -85,7 +85,7 @@ module.exports = {
                                     iconURL: user.displayAvatarURL(),
                                 })
                                 .setDescription(
-                                    `Times sugoied: ${userMetrics.sugois}`
+                                    `Times sugoied: ${userMetrics}`
                                 ),
                         ],
                     });
