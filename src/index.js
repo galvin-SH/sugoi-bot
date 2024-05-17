@@ -30,6 +30,14 @@ client.on(Events.MessageCreate, async (message) => {
         }
     }
 
+
+    if (matches.length === 0 && message.attachments.size > 0) {
+        for (const attachment of message.attachments.values()) {
+            matches.push(...attachment.name.toLowerCase().matchAll(SUGOI_REGEX));
+        }
+    }
+
+
     if (matches.length === 0 && !!message.poll) {
         matches.push(
             // match question text
