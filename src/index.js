@@ -38,6 +38,15 @@ client.on(Events.MessageCreate, async (message) => {
     }
 
 
+    if (matches.length === 0 && message.stickers.size > 0) {
+        for (const sticker of message.stickers.values()) {
+            matches.push(
+                ...sticker.name.toLowerCase().matchAll(SUGOI_REGEX),
+            )
+        }
+    }
+
+
     if (matches.length === 0 && !!message.poll) {
         matches.push(
             // match question text
