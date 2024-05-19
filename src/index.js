@@ -20,6 +20,49 @@ client.on(Events.MessageCreate, async (message) => {
     if (message.author.bot) return;
 
     const matches = [...message.content.toLowerCase().matchAll(SUGOI_REGEX)];
+    
+    // if we already matched something, we don't need to do all this additional work.
+    if (matches.length === 0 && message.embeds.length > 0) {
+        // because embeds have so many different fields, it's easier to just
+        // turn them into JSON strings and match against those.
+        for (const embed of message.embeds.map(JSON.stringify)) {
+            matches.push(...embed.toLowerCase().matchAll(SUGOI_REGEX));
+        }
+    }
+
+
+    if (matches.length === 0 && message.attachments.size > 0) {
+        for (const attachment of message.attachments.values()) {
+            matches.push(...attachment.name.toLowerCase().matchAll(SUGOI_REGEX));
+        }
+    }
+
+
+    if (matches.length === 0 && message.stickers.size > 0) {
+        for (const sticker of message.stickers.values()) {
+            matches.push(
+                ...sticker.name.toLowerCase().matchAll(SUGOI_REGEX),
+            )
+        }
+    }
+
+
+    if (matches.length === 0 && !!message.poll) {
+        matches.push(
+            // match question text
+            ...message.poll.question.text.toLowerCase().matchAll(SUGOI_REGEX),
+            ...[...message.poll.answers.values()]
+                .map(answer => [
+                    // match answer text
+                    ...(answer.text?.toLowerCase().matchAll(SUGOI_REGEX) ?? []),
+                    // match answer emoji
+                    ...(answer.emoji?.name?.toLowerCase().matchAll(SUGOI_REGEX) ?? []),
+                ])
+                // merge matches for all answers
+                .flat()
+                .filter(match => !!match),
+        );
+    }
 
     // If the message does not contain the target words, ignore it
     if (!matches || matches.length <= 0) return;
