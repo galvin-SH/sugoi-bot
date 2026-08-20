@@ -112,7 +112,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 async function main() {
     // ensure metrics.json exists before we login and receive events.
     const metrics = await getMetrics();
-    if (!metrics['total']) {
+    if (!("total" in metrics)) {
         console.error(
             'Old "metrics.json" format detected! Run "npm run update-json" and restart the bot.'
         );

@@ -1,5 +1,10 @@
 const fs = require('fs');
 
+const DEFAULT_METRICS = `{
+    "total": 0,
+    "users": {}
+}`;
+
 // Get the metrics object from metrics.json
 function getMetrics() {
     try {
@@ -7,7 +12,7 @@ function getMetrics() {
         if (!fs.existsSync('./metrics.json')) {
             console.log('metrics.json does not exist. Creating a new file...');
             // Create a new metrics.json file if it does not exist
-            fs.writeFileSync('./metrics.json', '{}');
+            fs.writeFileSync('./metrics.json', DEFAULT_METRICS);
         }
         // Return the metrics object from metrics.json
         return JSON.parse(fs.readFileSync('./metrics.json'));
